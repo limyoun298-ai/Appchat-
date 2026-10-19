@@ -1,0 +1,13 @@
+{
+"id": "/Appchat-/",
+"name": "APPCHAT",
+"short_name": "APPCHAT",
+"description": "APPCHAT — Discutez, partagez vos actualités et restez connectés.",
+"lang": "fr",
+"start_url": "/Appchat-/",
+"scope": "/Appchat-/",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#0A0F1E",
+"theme_color": "#0A84FF"
+}
