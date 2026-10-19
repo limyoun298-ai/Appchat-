@@ -262,7 +262,33 @@ function switchMode() {
   showMessage(authMessage, "");
 }
 
-switchButton.addEventListener("click", switchMode);
+switchButton.addEventListener("click", function () {
+  registerMode = !registerMode;
+
+  registerFields.classList.toggle("hidden", !registerMode);
+
+  formTitle.textContent = registerMode
+    ? "Créer un compte"
+    : "Bienvenue sur APPCHAT";
+
+  formSubtitle.textContent = registerMode
+    ? "Rejoins APPCHAT avec ton nom d'utilisateur."
+    : "Connecte-toi ou crée ton compte pour commencer.";
+
+  submitButton.textContent = registerMode
+    ? "Créer mon compte"
+    : "Se connecter";
+
+  switchButton.textContent = registerMode
+    ? "J'ai déjà un compte"
+    : "Créer un compte";
+
+  passwordInput.autocomplete = registerMode
+    ? "new-password"
+    : "current-password";
+
+  showMessage(authMessage, "");
+});
 
 /* Appel de la Edge Function */
 async function callAuthFunction(payload) {
