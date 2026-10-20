@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F1E">
+<meta name="description" content="APPCHAT — Discutez, partagez vos actualités et restez connectés.">
+<meta name="application-name" content="APPCHAT">
+<link rel="manifest" href="./manifest.json">
+<title>APPCHAT</title>
+
+<style>
+:root{--blue:#0A84FF;--gray:#1E293B;--black:#0A0F1E;--white:#FFF;--green:#00C950;--muted:#94A3B8;--border:#263449}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--black);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100dvh}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
+input,textarea,select{color:white}.hidden{display:none!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#app,.page{min-height:100dvh}
+.auth-wrap{display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{width:100%;max-width:400px}
+.brand,.top-brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.brand{font-size:25px}.logo{width:44px;height:44px;background:var(--blue);border-radius:10px;display:grid;place-items:center;font-size:30px;font-weight:900}
+.subtitle{color:var(--muted);line-height:1.5;font-size:14px;margin:16px 0 24px}
+.field{display:block;width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--gray);margin:10px 0}
+textarea.field{resize:vertical;min-height:90px}
+.primary,.secondary,.danger{width:100%;border:0;border-radius:24px;min-height:48px;padding:12px 16px;font-weight:700}
+.primary{background:var(--blue);color:white}.secondary{background:var(--gray);color:white;border:1px solid var(--border)}
+.danger{background:#401f2a;color:#fecaca}.switch-line{text-align:center;color:var(--muted);font-size:14px;margin-top:20px}
+.text-button{border:0;background:none;color:var(--blue);font-weight:700;padding:8px}
+.note{font-size:13px;color:var(--muted);line-height:1.5;margin:12px 0}
+.error{color:#fca5a5;font-size:13px;line-height:1.5;margin:10px 0}
+.success{color:#86efac;font-size:13px;line-height:1.5;margin:10px 0}
+#toast{position:fixed;z-index:100;bottom:88px;left:16px;right:16px;margin:auto;max-width:420px;background:#243247;padding:13px 16px;border-radius:14px;box-shadow:0 8px 28px #0007;font-size:14px}
+.topbar{height:60px;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--black);border-bottom:1px solid var(--border)}
+.top-brand{font-size:20px}.top-brand .logo{height:34px;width:34px;border-radius:7px;font-size:24px}
+.icon-button{height:42px;min-width:42px;border:0;background:transparent;color:white;border-radius:50%;display:inline-grid;place-items:center}
+.icon-button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.header-actions{display:flex;gap:3px}.content{max-width:700px;margin:auto;padding:14px 14px 100px}
+.search-wrap{height:42px;border-radius:24px;background:var(--gray);display:flex;align-items:center;gap:10px;padding:0 14px;margin:8px 0 16px}
+.search-wrap svg{width:19px;height:19px;stroke:var(--muted);fill:none;stroke-width:2}
+.search-wrap input{border:0;outline:0;background:transparent;width:100%;font-size:14px}
+.section-title{font-size:15px;font-weight:700;margin:20px 0 12px}
+.story-row{display:flex;gap:15px;overflow-x:auto;padding:4px 1px 12px}
+.story-item{width:68px;flex:0 0 68px;text-align:center;border:0;background:transparent;color:white;padding:0}
+.story-circle{width:62px;height:62px;margin:auto auto 6px;border-radius:50%;border:2px solid var(--blue);display:grid;place-items:center;overflow:hidden;background:var(--gray);font-size:23px}
+.story-circle img{width:100%;height:100%;object-fit:cover}.story-circle.add{border-style:dashed;color:var(--blue);font-size:30px}
+.story-name{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #1b2738;cursor:pointer}
+.avatar{width:56px;height:56px;flex:0 0 56px;border-radius:50%;background:var(--gray);display:grid;place-items:center;overflow:hidden;font-size:22px;font-weight:700}
+.avatar img{width:100%;height:100%;object-fit:cover}.avatar.small{width:36px;height:36px;flex-basis:36px;font-size:15px}
+.user-main{flex:1;min-width:0}.user-name{display:flex;align-items:center;gap:5px;font-size:16px;font-weight:700;min-width:0}
+.user-name span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.last-message{font-size:14px;color:var(--muted);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.time{font-size:10px;color:var(--muted);white-space:nowrap}
+.verified{width:15px;height:15px;display:inline-grid;place-items:center;flex:0 0 15px;border-radius:50%;background:var(--green)}
+.verified svg{width:9px;height:9px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:15;min-height:70px;padding-bottom:env(safe-area-inset-bottom);display:flex;justify-content:space-around;align-items:center;background:var(--black);border-top:1px solid var(--border)}
+.nav-button{border:0;background:transparent;color:var(--muted);min-width:65px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;padding:7px;border-radius:20px}
+.nav-button svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-button.active{background:var(--gray);color:white}
+.panel{background:#111a2a;border:1px solid var(--border);border-radius:16px;padding:16px;margin:12px 0}
+.panel h2{font-size:18px;margin:0 0 12px}.panel p{font-size:14px;color:var(--muted);line-height:1.5}
+.profile-head{display:flex;align-items:center;gap:14px;margin:10px 0 20px}.profile-head .avatar{width:80px;height:80px;flex-basis:80px}
+.item-button{width:100%;display:flex;align-items:center;gap:13px;text-align:left;background:transparent;color:white;border:0;border-bottom:1px solid var(--border);padding:16px 4px}
+.item-button:last-child{border-bottom:0}.item-button svg{width:22px;height:22px;stroke:var(--muted);fill:none;stroke-width:2}
+.chat-page{height:100dvh;display:flex;flex-direction:column}
+.chat-header{height:60px;flex:0 0 60px;display:flex;align-items:center;gap:8px;padding:0 8px;border-bottom:1px solid var(--border)}
+.chat-header .user-name{font-size:16px}.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
+.message{max-width:78%;padding:11px 14px;border-radius:18px;overflow-wrap:anywhere;font-size:15px;line-height:1.4}
+.message.sent{align-self:flex-end;background:var(--blue);border-bottom-right-radius:5px}
+.message.received{align-self:flex-start;background:var(--gray);border-bottom-left-radius:5px}
+.message-meta{font-size:10px;text-align:right;margin-top:5px;opacity:.8}
+.composer{display:flex;align-items:center;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border)}
+.composer input{flex:1;min-width:0;background:var(--gray);border:0;border-radius:24px;padding:13px 16px}
+.send-button{height:44px;width:44px;flex:0 0 44px;border:0;border-radius:50%;background:var(--blue);color:white;display:grid;place-items:center}
+.send-button svg{width:23px;height:23px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.subpage-header{display:flex;align-items:center;gap:10px;margin:0 0 16px}.subpage-header h2{font-size:19px;margin:0}
+.counter{text-align:right;color:var(--muted);font-size:10px}.status-text{font-size:13px;line-height:1.5;margin:12px 0}
+.empty{padding:26px 8px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
+.story-viewer{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column}
+.story-viewer img{width:100%;height:100%;object-fit:contain}
+.story-viewer .story-close{position:absolute;top:12px;right:12px;z-index:2}
+.official-card{display:flex;align-items:center;gap:12px;padding:13px;margin:10px 0 16px;background:#111a2a;border:1px solid #263449;border-radius:16px;cursor:pointer}
+.official-avatar{height:54px;width:54px;flex:0 0 54px;border-radius:50%;background:#0A84FF;display:grid;place-items:center;font-weight:900;font-size:25px}
+.official-card-main{flex:1;min-width:0}.official-card-title{display:flex;align-items:center;gap:5px;font-weight:800}
+.official-card p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.official-open{background:var(--blue);border:0;border-radius:20px;color:white;padding:8px 12px;font-size:12px;font-weight:700}
+.official-cover{border-radius:18px;padding:24px 16px;text-align:center;background:linear-gradient(140deg,#0A84FF,#102b55 65%,#111a2a);margin-bottom:16px}
+.official-cover .official-avatar{width:82px;height:82px;margin:0 auto 12px;border:3px solid white;font-size:38px}
+.official-cover h2{margin:6px 0;font-size:24px}.official-cover p{font-size:14px;color:#e2e8f0;line-height:1.5}
+.subscribe-button{border:0;border-radius:24px;padding:12px 22px;background:white;color:#0A0F1E;font-weight:800}
+.subscribe-button.subscribed{background:#1E293B;color:white;border:1px solid #526176}
+.official-post{padding:16px;margin:12px 0;background:#111a2a;border:1px solid var(--border);border-radius:16px}
+.official-post-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.official-post h3{font-size:16px;margin:0}.official-post p{font-size:14px;line-height:1.6;color:#d7e0eb;white-space:pre-wrap}
+.post-date{font-size:11px;color:var(--muted);margin-top:5px}
+@media(min-width:600px){.content{padding-top:20px}.auth-card{padding:28px;border:1px solid var(--border);border-radius:20px;background:#111a2a}}
+</style>
+</head>
+
+<body>
+<div id="app">
+<section id="authPage" class="page auth-wrap">
+<div class="auth-card">
+<div class="brand"><div class="logo">A</div><span>APPCHAT</span></div>
+<p class="subtitle">Discutez, partagez vos actualités et restez connectés.</p>
+<form id="authForm">
+<label for="username" class="note">Nom d’utilisateur</label>
+<input class="field" id="username" name="username" autocomplete="username" minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" placeholder="Ton nom d’utilisateur" required>
+<label for="password" class="note">Mot de passe</label>
+<input class="field" id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" placeholder="8 caractères minimum" required>
+<div id="registerFields" class="hidden">
+<label for="bio" class="note">Bio (facultatif, 100 caractères maximum)</label>
+<textarea class="field" id="bio" maxlength="100" placeholder="Présente-toi..."></textarea>
+<div class="counter"><span id="bioCount">0</span>/100</div>
+<label for="photoUrl" class="note">Lien de la photo (facultatif)</label>
+<input class="field" id="photoUrl" type="url" placeholder="https://...">
+</div>
+<button class="primary" id="authSubmit" type="submit">Se connecter</button>
+<div id="authMessage" aria-live="polite"></div>
+</form>
+<div class="switch-line"><span id="switchText">Tu n’as pas de compte ?</span>
+<button class="text-button" id="switchButton" type="button">Créer un compte</button></div>
+<p class="note">Aucun e-mail ni numéro de téléphone n’est demandé dans l’application.</p>
+</div>
+</section>
+
+<section id="homePage" class="page hidden">
+<header class="topbar">
+<div class="top-brand"><div class="logo">A</div><span>APPCHAT</span></div>
+<div class="header-actions">
+<button class="icon-button" id="newChatButton" aria-label="Nouvelle discussion" title="Nouvelle discussion"><svg viewBox="0 0 24 24"><path d="M12 20H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7"/><path d="m16 19 5-5M17 14h4v4"/></svg></button>
+<button class="icon-button" id="settingsButton" aria-label="Paramètres" title="Paramètres"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="#0A0F1E"/><circle cx="15" cy="12" r="2" fill="#0A0F1E"/><circle cx="10" cy="18" r="2" fill="#0A0F1E"/></svg></button>
+</div></header>
+<main class="content">
+<div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Rechercher des utilisateurs..." aria-label="Rechercher"></div>
+<div class="section-title">Aperçus</div>
+<div id="storyRow" class="story-row"><button id="createStoryButton" class="story-item" type="button"><span class="story-circle add">+</span><span class="story-name">Créer</span></button></div>
+<div class="section-title" id="listTitle">Discussions</div>
+<div id="userList"><div class="empty">Chargement...</div></div>
+</main>
+<nav class="bottom-nav" aria-label="Navigation principale">
+<button class="nav-button active" data-tab="chats"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8 8 0 0 1-4-.9L3 20l1.4-4A7.5 7.5 0 1 1 20 11.5Z"/></svg><span>Discussions</span></button>
+<button class="nav-button" data-tab="stories"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg><span>Actus</span></button>
+<button class="nav-button" data-tab="communities"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"/></svg><span>Communautés</span></button>
+<button class="nav-button" data-tab="calls"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-3 2a15 15 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></svg><span>Appels</span></button>
+</nav>
+</section>
+
+<section id="chatPage" class="page chat-page hidden">
+<header class="chat-header">
+<button class="icon-button" id="backFromChat" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+<div id="chatAvatar" class="avatar small">A</div>
+<div class="user-main"><div class="user-name"><span id="chatUsername">Discussion</span><span id="chatVerified"></span></div><div class="last-message" id="chatStatus">APPCHAT</div></div>
+<button class="icon-button" id="chatInfoButton" aria-label="Informations"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7h.01"/></svg></button>
+</header>
+<div id="chatMessages" class="chat-messages"><div class="empty">Chargement des messages...</div></div>
+<form id="messageForm" class="composer"><input id="messageInput" maxlength="4000" placeholder="Écrire un message..." autocomplete="off" required><button class="send-button" type="submit" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button></form>
+</section>
+
+<section id="subPage" class="page hidden">
+<header class="topbar"><button class="icon-button" id="subBack" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="top-brand"><span id="subTitle">APPCHAT</span></div><span style="width:42px"></span></header>
+<main id="subContent" class="content"></main>
+</section>
+</div>
+
+<div id="toast" class="hidden" role="status" aria-live="polite"></div>
+<div id="storyViewer" class="story-viewer hidden"><button id="closeStoryViewer" class="icon-button story-close" aria-label="Fermer">✕</button><img id="storyViewerImage" alt="Aperçu"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+
+/* Configuration Supabase existante : ne pas remplacer ces valeurs. */
+const SUPABASE_URL="https://jebypdzahbhwjnyyepyc.supabase.co";
+const SUPABASE_PUBLIC_KEY="sb_publishable_zopRaeiintTmlazVVp3Aow_0m7bC2Wk";
+const AUTH_FUNCTION_URL=SUPABASE_URL+"/functions/v1/blockchat-auth-";
+const REST_URL=SUPABASE_URL+"/rest/v1/";
+
+const $=id=>document.getElementById(id);
+const supabaseReady=!!(window.supabase&&window.supabase.createClient);
+const supabaseClient=supabaseReady?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY):null;
+let isRegisterMode=false,currentUser=null,currentSession=null,currentTab="chats",activeChatUser=null,usersCache=[],messagesTimer=null,usersTimer=null,toastTimer=null;
+const USER_STORAGE_KEY="appchat_user",SESSION_STORAGE_KEY="appchat_session";
+const OFFICIAL_SUBSCRIPTION_KEY="appchat_official_subscription";
+
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function showToast(m){$("toast").textContent=m;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),3500);}
+function setMessage(id,text,type="error"){const e=$(id);e.className=text?type:"";e.textContent=text||"";}
+function safeImageURL(v){if(!v)return"";try{const u=new URL(v);return["https:","http:"].includes(u.protocol)?u.href:"";}catch(_){return"";}}
+function avatarHTML(u,small=false){const n=u?.username||"?";const p=safeImageURL(u?.photo_url);return `<div class="${small?"avatar small":"avatar"}">${p?`<img src="${escapeHTML(p)}" alt="" referrerpolicy="no-referrer">`:escapeHTML(n.charAt(0).toUpperCase())}</div>`;}
+function verifiedHTML(u){return u?.has_badge?'<span class="verified" title="Compte vérifié"><svg viewBox="0 0 12 12"><path d="m2 6 2.5 2.5L10 3"/></svg></span>':"";}
+function officialBadge(){return '<span class="verified" title="Compte officiel APPCHAT"><svg viewBox="0 0 12 12"><path d="m2 6 2.5 2.5L10 3"/></svg></span>';}
+function showOnly(id){["authPage","homePage","chatPage","subPage"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function persistSession(){try{if(currentUser)localStorage.setItem(USER_STORAGE_KEY,JSON.stringify(currentUser));if(currentSession)localStorage.setItem(SESSION_STORAGE_KEY,JSON.stringify(currentSession));}catch(_){showToast("Le stockage local est indisponible.");}}
+function clearSessionStorage(){localStorage.removeItem(USER_STORAGE_KEY);localStorage.removeItem(SESSION_STORAGE_KEY);}
+function restoreSession(){try{const u=JSON.parse(localStorage.getItem(USER_STORAGE_KEY)||"null"),s=JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY)||"null");if(u?.id&&s?.access_token){currentUser=u;currentSession=s;return true;}}catch(_){}return false;}
+
+async function authRequest(action,username,password,extras={}) {
+ const r=await fetch(AUTH_FUNCTION_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_PUBLIC_KEY},body:JSON.stringify({action,username,password,...extras})});
+ const raw=await r.text();let data;try{data=raw?JSON.parse(raw):{};}catch(_){throw new Error("Réponse invalide du serveur d’authentification.");}
+ if(!r.ok||data.error||data.success===false)throw new Error(data.error||data.message||"La demande a échoué.");
+ return data;
+}
+function extractUser(r){return r?.user||r?.profile||r?.account||r?.data?.user||null;}
+function extractSession(r){return r?.session||r?.data?.session||null;}
+function normalizeUser(u){if(!u)return null;const m=u.user_metadata||{};return{id:u.id,username:u.username||m.username||u.email?.split("@")[0]||"Utilisateur",bio:u.bio??m.bio??"",photo_url:u.photo_url??m.photo_url??null,has_badge:!!u.has_badge,is_online:u.is_online??true,categorie:u.categorie??null,description_badge:u.description_badge??null,created_at:u.created_at??null};}
+
+async function showHome(user,session) {
+ currentUser=normalizeUser(user);currentSession=session||currentSession;
+ if(!currentUser?.id||!currentSession?.access_token){currentUser=null;currentSession=null;showOnly("authPage");setMessage("authMessage","Le serveur n’a pas renvoyé une session valide. Vérifie la fonction d’authentification.");return;}
+ persistSession();showOnly("homePage");setMessage("authMessage","");await loadUsers();renderStories();renderUsers();startRefresh();
+}
+function startRefresh(){stopRefresh();usersTimer=setInterval(()=>{if(currentUser&&currentTab==="chats"&&!activeChatUser)loadUsers(true);},15000);}
+function stopRefresh(){if(usersTimer)clearInterval(usersTimer);if(messagesTimer)clearInterval(messagesTimer);usersTimer=null;messagesTimer=null;}
+function restHeaders(extra={}){return{"apikey":SUPABASE_PUBLIC_KEY,"Authorization":"Bearer "+(currentSession?.access_token||""),"Content-Type":"application/json",...extra};}
+async function restRequest(path,options={}) {
+ if(!currentSession?.access_token)throw new Error("Ta session n’est pas disponible. Reconnecte-toi.");
+ const r=await fetch(REST_URL+path,{...options,headers:restHeaders(options.headers||{})});
+ const raw=await r.text();let d=null;try{d=raw?JSON.parse(raw):null;}catch(_){d=raw;}
+ if(r.status===401)throw new Error("SESSION_INVALID");
+ if(!r.ok){const m=typeof d==="object"&&d?(d.message||d.details||d.hint||d.error||"Erreur Supabase."):"Erreur Supabase.";throw new Error(m);}
+ return d;
+}
+function handleRequestError(e){const m=e?.message||"Une erreur est survenue.";if(m==="SESSION_INVALID"){showToast("La session a expiré. Reconnecte-toi pour continuer.");stopRefresh();showOnly("authPage");return;}showToast(m);}
+
+/* Inscription et connexion */
+$("switchButton").addEventListener("click",()=>{
+ isRegisterMode=!isRegisterMode;$("registerFields").classList.toggle("hidden",!isRegisterMode);
+ $("authSubmit").textContent=isRegisterMode?"Créer mon compte":"Se connecter";
+ $("switchText").textContent=isRegisterMode?"Tu as déjà un compte ?":"Tu n’as pas de compte ?";
+ $("switchButton").textContent=isRegisterMode?"Se connecter":"Créer un compte";
+ $("password").autocomplete=isRegisterMode?"new-password":"current-password";setMessage("authMessage","");
+});
+$("bio").addEventListener("input",()=>$("bioCount").textContent=$("bio").value.length);
+$("authForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!supabaseReady){setMessage("authMessage","Supabase ne s’est pas chargé. Vérifie Internet.");return;}
+ const username=$("username").value.trim().toLowerCase(),password=$("password").value;
+ if(!/^[a-z0-9_]{3,30}$/.test(username)){setMessage("authMessage","Le pseudo doit contenir 3 à 30 caractères : lettres, chiffres ou _.");return;}
+ if(password.length<8||password.length>128){setMessage("authMessage","Le mot de passe doit contenir entre 8 et 128 caractères.");return;}
+ $("authSubmit").disabled=true;$("authSubmit").textContent="Patiente...";setMessage("authMessage","");
+ try{
+  const extras=isRegisterMode?{bio:$("bio").value.trim().slice(0,100),photo_url:safeImageURL($("photoUrl").value.trim())||null}:{};
+  const result=await authRequest(isRegisterMode?"register":"login",username,password,extras);
+  const user=extractUser(result),session=extractSession(result);
+  if(session?.access_token&&user?.id){await showHome(user,session);}
+  else if(isRegisterMode&&result.success!==false){
+   isRegisterMode=false;$("registerFields").classList.add("hidden");$("authSubmit").textContent="Se connecter";$("switchText").textContent="Tu n’as pas de compte ?";$("switchButton").textContent="Créer un compte";
+   setMessage("authMessage","Compte créé. Connecte-toi avec le même pseudo et mot de passe.","success");
+  }else setMessage("authMessage","Le serveur n’a pas renvoyé de session valide. Vérifie la fonction d’authentification.");
+ }catch(e){setMessage("authMessage",e.message||"Impossible de continuer.");}
+ finally{$("authSubmit").disabled=false;$("authSubmit").textContent=isRegisterMode?"Créer mon compte":"Se connecter";}
+});
+
+/* Page officielle APPCHAT : les publications ci-dessous sont intégrées à l’interface. */
+function officialIsSubscribed(){return localStorage.getItem(OFFICIAL_SUBSCRIPTION_KEY)==="true";}
+function renderOfficialCard(){return `<div class="official-card" id="officialCard" role="button" tabindex="0" aria-label="Ouvrir la page officielle APPCHAT">
+ <div class="official-avatar">A</div><div class="official-card-main"><div class="official-card-title"><span>APPCHAT</span>${officialBadge()}</div><p>Compte officiel · Actualités et annonces</p></div>
+ <button class="official-open" type="button">Ouvrir</button></div>`;}
+function openOfficialPage(){
+ const subscribed=officialIsSubscribed();
+ openSubPage("APPCHAT officiel",`
+ <div class="official-cover"><div class="official-avatar">A</div><h2>APPCHAT ${officialBadge()}</h2>
+ <p>Bienvenue sur la page officielle d’APPCHAT.<br>Retrouve ici les annonces et les nouveautés.</p>
+ <button id="officialSubscribe" class="subscribe-button ${subscribed?"subscribed":""}" type="button">${subscribed?"Abonné ✓":"S’abonner"}</button>
+ <div class="note" id="officialSubCount">${subscribed?"Tu es abonné à APPCHAT.":"Abonne-toi pour suivre les actualités d’APPCHAT."}</div></div>
+ <div class="section-title">Publications</div>
+ <article class="official-post"><div class="official-post-head"><div class="official-avatar" style="width:38px;height:38px;flex-basis:38px;font-size:18px">A</div><div><h3>APPCHAT ${officialBadge()}</h3><div class="post-date">Publication officielle</div></div></div><h3>Bienvenue sur APPCHAT !</h3><p>Bienvenue dans APPCHAT, ton espace pour discuter, découvrir des actualités et rester connecté avec les autres utilisateurs. Merci de rejoindre notre communauté !</p></article>
+ <article class="official-post"><div class="official-post-head"><div class="official-avatar" style="width:38px;height:38px;flex-basis:38px;font-size:18px">A</div><div><h3>APPCHAT ${officialBadge()}</h3><div class="post-date">Publication officielle</div></div></div><h3>Bienvenue dans notre communauté</h3><p>Nous construisons APPCHAT pour faciliter les échanges. Complète ton profil, retrouve des utilisateurs et reste à l’écoute des prochaines nouveautés. Nous sommes heureux de t’accueillir !</p></article>
+ <p class="note">Les deux publications de bienvenue sont intégrées à cette version de l’application.</p>`);
+ $("officialSubscribe").addEventListener("click",()=>{
+  const next=!officialIsSubscribed();
+  if(next)localStorage.setItem(OFFICIAL_SUBSCRIPTION_KEY,"true");else localStorage.removeItem(OFFICIAL_SUBSCRIPTION_KEY);
+  $("officialSubscribe").textContent=next?"Abonné ✓":"S’abonner";
+  $("officialSubscribe").classList.toggle("subscribed",next);
+  $("officialSubCount").textContent=next?"Tu es abonné à APPCHAT.":"Tu n’es plus abonné à APPCHAT.";
+  showToast(next?"Tu es maintenant abonné à APPCHAT.":"Tu t’es désabonné d’APPCHAT.");
+  renderUsers();
+ });
+}
+function wireOfficialCard(){const c=$("officialCard");if(c){c.addEventListener("click",openOfficialPage);c.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openOfficialPage();}});}}
+async function loadUsers(silent=false){
+ if(!currentUser)return;
+ try{const rows=await restRequest("users?select=id,username,bio,photo_url,has_badge,is_online,categorie,description_badge,created_at&order=username.asc");usersCache=Array.isArray(rows)?rows.filter(u=>u.id!==currentUser.id):[];renderUsers();}
+ catch(e){if(!silent)$("userList").innerHTML=`<div class="empty">Impossible de charger les utilisateurs.<br>${escapeHTML(e.message==="SESSION_INVALID"?"Ta session doit être renouvelée.":e.message)}</div>`;}
+}
+function renderUsers(){
+ if(!currentUser)return;
+ const query=$("searchInput").value.trim().toLowerCase();
+ const users=usersCache.filter(u=>`${u.username||""} ${u.bio||""}`.toLowerCase().includes(query));
+ if(currentTab==="communities"){$("listTitle").textContent="Communautés";$("userList").innerHTML=renderOfficialCard()+'<div class="empty">La table des communautés n’est pas encore connectée à cette version.</div>';wireOfficialCard();return;}
+ if(currentTab==="calls"){$("listTitle").textContent="Appels";$("userList").innerHTML=renderOfficialCard()+'<div class="empty">L’historique des appels nécessite une table dédiée.</div>';wireOfficialCard();return;}
+ if(currentTab==="stories"){$("listTitle").textContent="Actualités";$("userList").innerHTML=renderOfficialCard()+'<div class="panel"><h2>Actualités APPCHAT</h2><p>Ouvre la page officielle pour lire les deux publications de bienvenue.</p><button class="primary" id="openOfficialNews">Voir les publications</button></div><div class="empty">Les aperçus personnels sont visibles dans la rangée Aperçus.</div>';wireOfficialCard();$("openOfficialNews").addEventListener("click",openOfficialPage);return;}
+ $("listTitle").textContent=query?"Résultats":"Discussions";
+ let html=renderOfficialCard();
+ if(!users.length)html+=`<div class="empty">${query?"Aucun utilisateur trouvé.":"Aucun autre utilisateur pour le moment."}</div>`;
+ else html+=users.map(u=>`<div class="user-row" data-user-id="${escapeHTML(u.id)}">${avatarHTML(u)}<div class="user-main"><div class="user-name"><span>${escapeHTML(u.username)}</span>${verifiedHTML(u)}</div><div class="last-message">${escapeHTML(u.bio||"Disponible sur APPCHAT")}</div></div><span class="time">${u.is_online?"En ligne":""}</span></div>`).join("");
+ $("userList").innerHTML=html;wireOfficialCard();
+ $("userList").querySelectorAll("[data-user-id]").forEach(row=>row.addEventListener("click",()=>{const u=usersCache.find(x=>x.id===row.dataset.userId);if(u)openChat(u);}));
+}
+$("searchInput").addEventListener("input",renderUsers);
+
+/* Discussions */
+async function openChat(user){
+ activeChatUser=user;$("chatUsername").textContent=user.username||"Utilisateur";
+ $("chatAvatar").outerHTML=`<div id="chatAvatar" class="avatar small">${safeImageURL(user.photo_url)?`<img src="${escapeHTML(safeImageURL(user.photo_url))}" alt="">`:escapeHTML((user.username||"?").charAt(0).toUpperCase())}</div>`;
+ $("chatVerified").innerHTML=verifiedHTML(user);$("chatStatus").textContent=user.is_online?"En ligne":"APPCHAT";
+ showOnly("chatPage");await loadMessages();if(messagesTimer)clearInterval(messagesTimer);messagesTimer=setInterval(loadMessages,7000);
+}
+async function loadMessages(){
+ if(!currentUser||!activeChatUser)return;
+ try{
+  const a=encodeURIComponent(currentUser.id),b=encodeURIComponent(activeChatUser.id);
+  const filter=`or=(and(sender_id.eq.${a},receiver_id.eq.${b}),and(sender_id.eq.${b},receiver_id.eq.${a}))`;
+  const rows=await restRequest("messages?select=id,sender_id,receiver_id,content,created_at,lu,reaction&"+filter+"&order=created_at.asc&limit=200");
+  renderMessages(Array.isArray(rows)?rows:[]);
+ }catch(e){$("chatMessages").innerHTML=`<div class="empty">Impossible de charger les messages.<br>${escapeHTML(e.message==="SESSION_INVALID"?"Ta session a expiré.":e.message)}</div>`;}
+}
+function renderMessages(rows){
+ const c=$("chatMessages");if(!rows.length){c.innerHTML='<div class="empty">Début de la discussion.<br>Envoie le premier message.</div>';return;}
+ c.innerHTML=rows.map(m=>{const sent=m.sender_id===currentUser.id,d=m.created_at?new Date(m.created_at):null,t=d&&!Number.isNaN(d.getTime())?d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"";return `<div class="message ${sent?"sent":"received"}"><div>${escapeHTML(m.content)}</div><div class="message-meta">${escapeHTML(t)}${sent?(m.lu?" ✓✓":" ✓"):""}</div></div>`;}).join("");c.scrollTop=c.scrollHeight;
+}
+$("messageForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!activeChatUser||!currentUser)return;const input=$("messageInput"),content=input.value.trim();if(!content)return;
+ const b=$("messageForm").querySelector("button");b.disabled=true;
+ try{await restRequest("messages",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({sender_id:currentUser.id,receiver_id:activeChatUser.id,content})});input.value="";await loadMessages();}
+ catch(e){handleRequestError(e);}finally{b.disabled=false;input.focus();}
+});
+$("backFromChat").addEventListener("click",()=>{activeChatUser=null;if(messagesTimer)clearInterval(messagesTimer);messagesTimer=null;showOnly("homePage");loadUsers(true);});
+$("chatInfoButton").addEventListener("click",()=>{if(activeChatUser)openProfilePage(activeChatUser,true);});
+
+/* Aperçus locaux */
+let localStories=[];
+function renderStories(){
+ const row=$("storyRow");
+ row.innerHTML='<button id="createStoryButton" class="story-item" type="button"><span class="story-circle add">+</span><span class="story-name">Créer</span></button>'+localStories.map((s,i)=>`<button class="story-item" data-story-index="${i}" type="button"><span class="story-circle"><img src="${escapeHTML(s.url)}" alt=""></span><span class="story-name">${escapeHTML(s.title||"Mon aperçu")}</span></button>`).join("");
+ $("createStoryButton").addEventListener("click",createStory);
+ row.querySelectorAll("[data-story-index]").forEach(b=>b.addEventListener("click",()=>{const s=localStories[Number(b.dataset.storyIndex)];if(s){$("storyViewerImage").src=s.url;$("storyViewer").classList.remove("hidden");}}));
+}
+function createStory(){const v=prompt("Colle le lien public d’une image (https://...) :");if(!v)return;const url=safeImageURL(v.trim());if(!url){showToast("Utilise un lien d’image http:// ou https://.");return;}localStories.push({url,title:currentUser?.username||"Mon aperçu"});renderStories();showToast("Aperçu ajouté sur cet appareil, pas encore partagé.");}
+$("createStoryButton").addEventListener("click",createStory);
+$("closeStoryViewer").addEventListener("click",()=>{$("storyViewer").classList.add("hidden");$("storyViewerImage").src="";});
+
+/* Profil */
+function openSubPage(title,html){$("subTitle").textContent=title;$("subContent").innerHTML=html;showOnly("subPage");}
+function openProfilePage(user=currentUser,backToChat=false){
+ if(!user)return;const mine=user.id===currentUser?.id;
+ openSubPage(mine?"Mon profil":"Profil",`<div class="panel"><div class="profile-head">${avatarHTML(user)}<div><div class="user-name">${escapeHTML(user.username)} ${verifiedHTML(user)}</div><p>${mine?"Ton profil APPCHAT":"Profil utilisateur"}</p></div></div>
+ <label class="note" for="profileBio">Bio (100 caractères maximum)</label><textarea id="profileBio" class="field" maxlength="100" ${mine?"":"disabled"}>${escapeHTML(user.bio||"")}</textarea><div class="counter"><span id="profileBioCount">${(user.bio||"").length}</span>/100</div>
+ <label class="note" for="profilePhoto">Lien de la photo</label><input id="profilePhoto" class="field" type="url" value="${escapeHTML(user.photo_url||"")}" ${mine?"":"disabled"} placeholder="https://...">
+ ${mine?'<button class="primary" id="saveProfileButton" type="button">Enregistrer le profil</button>':'<button class="secondary" id="startChatButton" type="button">Envoyer un message</button>'}</div>`);
+ const bio=$("profileBio");bio?.addEventListener("input",()=>$("profileBioCount").textContent=bio.value.length);
+ $("saveProfileButton")?.addEventListener("click",async()=>{
+  const newBio=$("profileBio").value.trim().slice(0,100),newPhoto=safeImageURL($("profilePhoto").value.trim())||null;
+  try{const updated=await restRequest("users?id=eq."+encodeURIComponent(currentUser.id),{method:"PATCH",headers:{"Prefer":"return=representation"},body:JSON.stringify({bio:newBio,photo_url:newPhoto})});
+   currentUser.bio=newBio;currentUser.photo_url=newPhoto;if(Array.isArray(updated)&&updated[0])currentUser={...currentUser,...updated[0]};persistSession();showToast("Profil enregistré.");await loadUsers(true);openProfilePage(currentUser);
+  }catch(e){handleRequestError(e);}
+ });
+ $("startChatButton")?.addEventListener("click",()=>openChat(user));$("subBack").dataset.backToChat=backToChat?"true":"false";
+}
+function openSettings(){
+ openSubPage("Paramètres",`<div class="panel">
+ <button class="item-button" id="profileSettings"><span>Profil</span></button>
+ <button class="item-button" id="verificationSettings"><span>Demande de vérification</span></button>
+ <button class="item-button" id="officialSettings"><span>Page officielle APPCHAT ${officialBadge()}</span></button>
+ <button class="item-button" id="darkModeSettings"><span>Mode sombre</span></button>
+ <button class="item-button" id="notificationSettings"><span>Notifications</span></button>
+ <button class="item-button" id="deleteAccountSettings"><span>Supprimer mon compte</span></button>
+ <button class="item-button" id="logoutButton"><span>Se déconnecter</span></button></div>
+ <p class="note">APPCHAT — certaines options nécessitent encore une configuration serveur.</p>`);
+ $("profileSettings").addEventListener("click",()=>openProfilePage());
+ $("officialSettings").addEventListener("click",openOfficialPage);
+ $("verificationSettings").addEventListener("click",openVerificationPage);
+ $("darkModeSettings").addEventListener("click",()=>showToast("L’interface utilise déjà le thème sombre."));
+ $("notificationSettings").addEventListener("click",()=>showToast("Les notifications push nécessitent une configuration supplémentaire."));
+ $("deleteAccountSettings").addEventListener("click",()=>{openSubPage("Suppression du compte",'<div class="panel"><h2>Supprimer ton compte ?</h2><p>Cette opération nécessite une fonction serveur sécurisée. Aucun compte n’a été supprimé.</p><button class="secondary" id="cancelDelete">Annuler</button></div>');$("cancelDelete").addEventListener("click",openSettings);});
+ $("logoutButton").addEventListener("click",logout);
+}
+function openVerificationPage(){
+ openSubPage("Vérification",`<div class="panel"><h2>Demande de badge vert</h2><p>Choisis une catégorie et explique ta demande.</p>
+ <label class="note" for="verificationCategory">Catégorie</label><select id="verificationCategory" class="field"><option value="professional">Professionnel</option><option value="business">Entreprise</option><option value="star">Personnalité publique</option></select>
+ <label class="note" for="verificationReason">Pourquoi veux-tu le badge ?</label><textarea id="verificationReason" class="field" maxlength="200" placeholder="Explique ta demande..."></textarea><div class="counter"><span id="verificationCount">0</span>/200</div><button class="primary" id="submitVerification" type="button">Préparer ma demande</button><div id="verificationMessage" class="status-text"></div></div>`);
+ $("verificationReason").addEventListener("input",()=>$("verificationCount").textContent=$("verificationReason").value.length);
+ $("submitVerification").addEventListener("click",()=>{const r=$("verificationReason").value.trim();$("verificationMessage").textContent=r.length<10?"Écris au moins 10 caractères pour expliquer ta demande.":"Ta demande est prête, mais elle n’a pas été envoyée : la table verification_requests et la fonction serveur de vérification ne sont pas encore configurées. Aucun badge n’a été attribué.";});
+}
+$("settingsButton").addEventListener("click",openSettings);
+$("newChatButton").addEventListener("click",()=>{$("searchInput").focus();$("searchInput").placeholder="Cherche une personne pour discuter...";showToast("Choisis un utilisateur dans la liste.");});
+$("subBack").addEventListener("click",()=>{
+ if($("subBack").dataset.backToChat==="true"&&activeChatUser)showOnly("chatPage");
+ else{showOnly("homePage");renderUsers();loadUsers(true);}
+ $("subBack").dataset.backToChat="false";
+});
+
+/* Navigation */
+document.querySelectorAll(".nav-button").forEach(b=>b.addEventListener("click",()=>{
+ currentTab=b.dataset.tab;document.querySelectorAll(".nav-button").forEach(x=>x.classList.toggle("active",x===b));
+ activeChatUser=null;if(messagesTimer)clearInterval(messagesTimer);messagesTimer=null;showOnly("homePage");renderUsers();if(currentTab==="stories")renderStories();
+}));
+async function logout(){
+ if(!confirm("Veux-tu vraiment te déconnecter ?"))return;stopRefresh();
+ try{if(currentSession?.access_token)await fetch(AUTH_FUNCTION_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_PUBLIC_KEY,"Authorization":"Bearer "+currentSession.access_token},body:JSON.stringify({action:"logout"}));}catch(_){}
+ currentUser=null;currentSession=null;activeChatUser=null;clearSessionStorage();showOnly("authPage");setMessage("authMessage","Tu es déconnecté.","success");
+}
+
+/* Démarrage : une erreur réseau ne supprime plus automatiquement la session locale. */
+async function init(){
+ if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+ if(!supabaseReady){setMessage("authMessage","Impossible de charger Supabase. Vérifie la connexion Internet.");return;}
+ if(!restoreSession()){showOnly("authPage");return;}
+ showOnly("homePage");
+ try{
+  const rows=await restRequest("users?select=id,username,bio,photo_url,has_badge,is_online,categorie,description_badge,created_at&id=eq."+encodeURIComponent(currentUser.id));
+  if(Array.isArray(rows)&&rows[0])currentUser=normalizeUser({...rows[0],id:currentUser.id});
+  persistSession();await showHome(currentUser,currentSession);
+ }catch(e){
+  if(e.message==="SESSION_INVALID"){
+   /* Ne détruit pas les données du compte. Demande une nouvelle connexion si le jeton est invalide. */
+   showOnly("authPage");setMessage("authMessage","Ta session a expiré. Connecte-toi avec ton compte existant.");
+  }else{
+   /* Une panne réseau temporaire ne doit pas effacer la session sauvegardée. */
+   showOnly("homePage");renderStories();renderUsers();showToast("Connexion au serveur impossible pour le moment. Réessaie quand Internet fonctionne.");
+  }
+ }
+}
+init();
+</script>
+</body>
+  </html>
