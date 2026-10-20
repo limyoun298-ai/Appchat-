@@ -226,7 +226,29 @@ async function restRequest(path,options={}) {
 function handleRequestError(e){const m=e?.message||"Une erreur est survenue.";if(m==="SESSION_INVALID"){showToast("La session a expiré. Reconnecte-toi pour continuer.");stopRefresh();showOnly("authPage");return;}showToast(m);}
 
 /* Inscription et connexion */
-$("switchButton").addEventListener("click",()=>{
+$("switchButton").onclick = function () {
+isRegisterMode = !isRegisterMode;
+
+$("registerFields").classList.toggle("hidden", !isRegisterMode);
+
+$("authSubmit").textContent = isRegisterMode
+? "Créer mon compte"
+: "Se connecter";
+
+$("switchText").textContent = isRegisterMode
+? "Tu as déjà un compte ?"
+: "Tu n’as pas de compte ?";
+
+$("switchButton").textContent = isRegisterMode
+? "Se connecter"
+: "Créer un compte";
+
+$("password").autocomplete = isRegisterMode
+? "new-password"
+: "current-password";
+
+setMessage("authMessage", "");
+};
  isRegisterMode=!isRegisterMode;$("registerFields").classList.toggle("hidden",!isRegisterMode);
  $("authSubmit").textContent=isRegisterMode?"Créer mon compte":"Se connecter";
  $("switchText").textContent=isRegisterMode?"Tu as déjà un compte ?":"Tu n’as pas de compte ?";
