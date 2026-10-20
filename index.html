@@ -249,8 +249,7 @@ $("password").autocomplete = isRegisterMode
 
 setMessage("authMessage", "");
 };
- isRegisterMode=!isRegisterMode;$("registerFields").classList.toggle("hidden",!isRegisterMode);
- $("authSubmit").textContent=isRegisterMode?"Créer mon compte":"Se connecter";
+  $("authSubmit").textContent=isRegisterMode?"Créer mon compte":"Se connecter";
  $("switchText").textContent=isRegisterMode?"Tu as déjà un compte ?":"Tu n’as pas de compte ?";
  $("switchButton").textContent=isRegisterMode?"Se connecter":"Créer un compte";
  $("password").autocomplete=isRegisterMode?"new-password":"current-password";setMessage("authMessage","");
